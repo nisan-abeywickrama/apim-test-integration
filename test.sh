@@ -145,4 +145,4 @@ node ./upload_email
 
 ######
 
-exit $MVNSTATE
+# exit $MVNSTATE
