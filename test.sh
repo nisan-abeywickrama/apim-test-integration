@@ -98,7 +98,7 @@ echo $CYPRESS_BASE_URL;
 ######
 export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update -y
-sleep 300
+sleep 120
 sudo killall apt apt-get dpkg
 sudo dpkg --configure -a
 curl -fsSL https://deb.nodesource.com/setup_12.x | sudo -E bash -
