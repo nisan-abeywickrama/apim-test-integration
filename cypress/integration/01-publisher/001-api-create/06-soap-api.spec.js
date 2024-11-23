@@ -115,10 +115,7 @@ describe("publisher-001-06 : Verify SOAP API creation", () => {
         </soap:Body>
         </soap:Envelope>`
 
-        const baseUrl = Cypress.config('baseUrl'); 
-        const url = new URL(baseUrl); 
-        const hostname = url.hostname; 
-        const soapUrl = `https://${hostname}:8243${apiContext}/${apiVersion}/`;
+        const soapUrl = `https://localhost:8243${apiContext}/${apiVersion}/`;
         const sopaAction = 'http://ws.cdyne.com/PhoneVerify/query/CheckPhoneNumber'
         
         // cy.get('div[data-param-name="SOAP Request"] .body-param__text').clear().type(soapRequestBody);
