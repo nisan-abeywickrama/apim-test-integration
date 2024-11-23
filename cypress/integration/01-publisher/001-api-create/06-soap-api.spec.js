@@ -101,10 +101,8 @@ describe("publisher-001-06 : Verify SOAP API creation", () => {
         cy.wait('@genToken');
 
         // Test the console
-        cy.get('#operations-default-post__').click();
-        cy.get('#operations-default-post__ .try-out__btn').click();
-
-        
+        cy.get('#operations-default-post__').find('.opblock-summary-control').click();
+        cy.get('#operations-default-post__').find('.try-out__btn').click();
         const soapRequestBody = `<?xml version="1.0" encoding="utf-8"?>
         <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <soap:Body>
@@ -115,38 +113,16 @@ describe("publisher-001-06 : Verify SOAP API creation", () => {
         </soap:Body>
         </soap:Envelope>`
 
-        const baseUrl = Cypress.config('baseUrl'); 
-        const url = new URL(baseUrl); 
-        const hostname = url.hostname; 
-        const soapUrl = `https://${hostname}:8243${apiContext}/${apiVersion}/`;
         const sopaAction = 'http://ws.cdyne.com/PhoneVerify/query/CheckPhoneNumber'
         
-        // cy.get('div[data-param-name="SOAP Request"] .body-param__text').clear().type(soapRequestBody);
-        // cy.get('tr[data-param-name="SOAPAction"] .parameters-col_description > input').type(sopaAction)
+        cy.get('div[data-param-name="SOAP Request"] .body-param__text').clear().type(soapRequestBody);
+        cy.get('tr[data-param-name="SOAPAction"] .parameters-col_description > input').type(sopaAction)
+        cy.wait(1000);
 
-        let accessToken = null;
-        cy.get('#accessTokenInput').invoke('val').then((token) => {
-            accessToken = token;
-            cy.log('Access Token:', accessToken);
-
-            const headers = `-H 'accept: application/json' -H 'SOAPAction: ${sopaAction}' -H 'Content-Type: text/xml' -H 'Authorization: Bearer ${accessToken}'`;
-            cy.log(`curl -k -X 'POST' ${headers} -d '${soapRequestBody}' ${soapUrl} -o /dev/null -s -w "%{http_code}"`)
-            // Execute the curl command
-            cy.exec(
-                `curl -k -X 'POST' ${headers} -d '${soapRequestBody}' ${soapUrl} -o /dev/null -s -w "%{http_code}"`
-            ).then((response) => {
-                const httpStatusCode = parseInt(response.stdout, 10);
-                cy.log('HTTP Status Code:', httpStatusCode);
-                expect(httpStatusCode).to.eq(200); // Assert that the response code is 200
-            });
-        });
-        // cy.get('#operations-default-post__ .execute-wrapper .execute').click();
-        // cy.wait(2000);
-        // cy.get('.loading-container',{timeout:25000}).should('not.exist');
-
-        // verify response
-        // cy.get('tr[class="response"] > td.response-col_status').contains('200').should('exist');
-        //cy.contains('Toll Free') // response body contains : <Company>Toll Free</Company>
+        cy.get('#operations-default-post__').find('.execute').click();
+        cy.wait(3000);
+        cy.get('#operations-default-post__').find('.response-col_status').contains('200').should('exist');
+        cy.contains('Toll Free') // response body contains : <Company>Toll Free</Company>
     });
 
     /*
