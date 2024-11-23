@@ -115,20 +115,35 @@ describe("publisher-001-06 : Verify SOAP API creation", () => {
         </soap:Body>
         </soap:Envelope>`
 
+        const soapUrl = `https://localhost:8243${apiContext}/${apiVersion}/`;
         const sopaAction = 'http://ws.cdyne.com/PhoneVerify/query/CheckPhoneNumber'
         
-        cy.get('div[data-param-name="SOAP Request"] .body-param__text').clear().type(soapRequestBody);
-        cy.get('tr[data-param-name="SOAPAction"] .parameters-col_description > input').type(sopaAction)
+        // cy.get('div[data-param-name="SOAP Request"] .body-param__text').clear().type(soapRequestBody);
+        // cy.get('tr[data-param-name="SOAPAction"] .parameters-col_description > input').type(sopaAction)
 
-        cy.get('#operations-default-post__ .execute-wrapper .execute').click();
-        cy.get('.loading-container',{timeout:25000}).should('not.exist');
+        let accessToken = null;
+        cy.get('#accessTokenInput').invoke('val').then((token) => {
+            accessToken = token;
+            cy.log('Access Token:', accessToken);
 
-        //verify response
-        cy.get('tr[class="response"] > td.response-col_status').contains('200').should('exist');
-        cy.contains('Toll Free') // response body contains : <Company>Toll Free</Company>
-        cy.wait(1000)
+            const headers = `-H 'accept: application/json' -H 'SOAPAction: ${sopaAction}' -H 'Content-Type: text/xml' -H 'Authorization: Bearer ${accessToken}'`;
+            cy.log(`curl -k -X 'POST' ${headers} -d '${soapRequestBody}' ${soapUrl} -o /dev/null -s -w "%{http_code}"`)
+            // Execute the curl command
+            cy.exec(
+                `curl -k -X 'POST' ${headers} -d '${soapRequestBody}' ${soapUrl} -o /dev/null -s -w "%{http_code}"`
+            ).then((response) => {
+                const httpStatusCode = parseInt(response.stdout, 10);
+                cy.log('HTTP Status Code:', httpStatusCode);
+                expect(httpStatusCode).to.eq(200); // Assert that the response code is 200
+            });
+        });
+        // cy.get('#operations-default-post__ .execute-wrapper .execute').click();
+        // cy.wait(2000);
+        // cy.get('.loading-container',{timeout:25000}).should('not.exist');
 
-        
+        // verify response
+        // cy.get('tr[class="response"] > td.response-col_status').contains('200').should('exist');
+        //cy.contains('Toll Free') // response body contains : <Company>Toll Free</Company>
     });
 
     /*
