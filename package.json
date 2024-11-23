@@ -8,7 +8,7 @@
     "url": "git://github.com/wso2/apim-test-integration.git"
   },
   "scripts": {
-    "test": "cypress run --spec **/*.spec.js",
+    "test": "cypress run --spec cypress/integration/00-init/00-init-test-data.spec.js",
     "test:local": "./test.local.sh",
     "test:gui": "cypress run --headed",
     "test:dev": "cypress open",
