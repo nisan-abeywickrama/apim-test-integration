@@ -136,7 +136,7 @@ npm run delete:reportFolderReport
 npm run pre-test
 nohup Xvfb :99 > /dev/null 2>&1 &
 export DISPLAY=:99
-npm run test
+NO_COLOR=1 npm run test
 MVNSTATE=$?
 pkill Xvfb
 npm run report:merge
